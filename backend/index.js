@@ -19,4 +19,4 @@ conn.sync({force: false}).then(()=>{
         console.log(`Server listening on port: ${PORT}`);
         console.log(`http://localhost:${PORT}`);
     })
-});
+}); 
