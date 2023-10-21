@@ -12,8 +12,8 @@ const {
 } = process.env;
 
 const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`, {
-  logging: false, 
-  native: false,
+    logging: false,
+    native: false,
 });
 
 // const client = new Client({
@@ -72,8 +72,29 @@ let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].s
 sequelize.models = Object.fromEntries(capsEntries);
 
 const {
-    Usuario
+    User,
+    Artist,
+    Favorites,
+    Items_Favorites,
+    Items_PlayList,
+    Play_List,
+    Track
 } = sequelize.models;
+
+User.hasMany(Play_List);
+Play_List.belongsTo(User);
+
+User.hasMany(Favorites);
+Favorites.belongsTo(User);
+
+Play_List.belongsToMany(Track, { through: Items_PlayList });
+Track.belongsToMany(Play_List, { through: Items_PlayList });
+
+Favorites.belongsToMany(Track, { through: Items_Favorites });
+Track.belongsToMany(Favorites, { through: Items_Favorites });
+
+Artist.hasMany(Track);
+Track.belongsTo(Artist);
 
 module.exports = {
     ...sequelize.models,
