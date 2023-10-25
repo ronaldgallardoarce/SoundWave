@@ -1,7 +1,7 @@
 const awsController = (file) => {
-    console.log(file)
-    return file;
-}
-module.exports ={
-    awsController
-}
+  console.log(file);
+  return file;
+};
+module.exports = {
+  awsController,
+};

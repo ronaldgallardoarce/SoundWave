@@ -13,6 +13,8 @@ import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import * as FileSystem from "expo-file-system";
 import { Video } from "expo-av";
+import { useDispatch } from "react-redux";
+import { allArtist } from "../../redux-toolkit/actions/trackArtistActions";
 
 const Artists = () => {
   const [form, setForm] = useState({
@@ -22,15 +24,51 @@ const Artists = () => {
     genres: "",
     popularity: 0,
   });
+  const dispatch=useDispatch();
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("file", {
       uri: form.images,
-      name: "profile.jpeg", // Cambia "video.mp4" por el nombre que deseas darle al archivo en el servidor
-      type: "image/jpeg", // Cambia "video/mp4" por el tipo MIME correcto del archivo
+      name: "profile.jpeg",
+      type: "image/jpeg",
     });
     try {
-      const response = await axios.post("https://ab96-181-188-177-175.ngrok-free.app/api/aws/upload");
+      const response = await axios.post(
+        "http://192.168.0.20:3001/api/aws/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.data.key) {
+        const res = await axios.post(
+          "http://192.168.0.20:3001/api/artist/register",
+          {
+            name: form.name,
+            images: [response.data.key],
+            followers: form.followers,
+            genres: [form.genres],
+            popularity: form.popularity,
+          }
+        );
+        if(res){
+          dispatch(allArtist(res.data.update));
+        }
+        Alert.alert(
+          "Registro exitoso",
+          "El artista se ha creado correctamente"
+        );
+        setForm({
+          name: "",
+          images: null,
+          followers: 0,
+          genres: "",
+          popularity: 0,
+        });
+      }
+      console.log(response.data);
     } catch (error) {
       console.log(error.data);
       console.log("Error al subir el archivo:", error);
@@ -46,7 +84,7 @@ const Artists = () => {
         console.log(result);
         setForm({
           ...form,
-          file: uri,
+          images: uri,
         });
       }
     } catch (error) {
@@ -55,14 +93,20 @@ const Artists = () => {
   };
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 30, color: "white" }}>Create Artists</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Create Artists</Text>
+        <Image
+          style={styles.image}
+          source={form.images ? { uri: form.images } : null}
+        />
+
+        <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
+          <Image
+            style={styles.uploadIcon}
+            source={form.images ? { uri: form.images } : null}
+          />
+          <Text style={styles.uploadText}>Select Image Profile</Text>
+        </TouchableOpacity>
       </View>
       <TextInput
         style={styles.input}
@@ -78,15 +122,11 @@ const Artists = () => {
         value={form.genres}
         onChangeText={(genres) => setForm({ ...form, genres: genres })}
       />
-      <Button
-        style={styles.button}
-        title="Select Image Profile"
-        onPress={pickDocument}
-      />
+
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
-      <Text style={styles.buttonText}>{JSON.stringify(form)}</Text>
+      {/* <Text style={styles.buttonText}>{JSON.stringify(form)}</Text> */}
     </View>
   );
 };
@@ -98,6 +138,39 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#0F1626",
     gap: 10,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 30,
+    color: "white",
+    marginBottom: 10,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
+    backgroundColor: "white",
+  },
+  uploadButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1db954",
+    padding: 12,
+    borderRadius: 4,
+  },
+  uploadIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  uploadText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   input: {
     marginBottom: 12,
@@ -117,21 +190,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
-  },
-  uploadButton: {
-    width: 200,
-    height: 200,
-    backgroundColor: "#ccc",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  uploadIcon: {
-    width: 50,
-    height: 50,
-  },
-  image: {
-    width: 200,
-    height: 200,
   },
 });
 
