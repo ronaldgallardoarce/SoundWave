@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import AddMusicSpotify from '../spotify/addMusicSpotify';
 import Login from '../login/login';
 import SignIn from '../login/signIn';
+import Artists from '../Artists/Artists';
+import AwsUploads from '../Aws/AwsUploads';
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
     return (
@@ -62,6 +64,36 @@ const BottomTabs = () => {
                         )
                 }}
             />
+            <Tab.Screen
+        name="Asw"
+        component={AwsUploads}
+        options={{
+          tabBarLabel: "AWS",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="upload-multiple"
+              size={size}
+              color={color}
+            />
+          ),
+          headerShown: false,
+        }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name="Artists"
+        component={Artists}
+        options={{
+          tabBarLabel: "Artists",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="upload-multiple"
+              size={size}
+              color={color}
+            />
+          ),
+          headerShown: false,
+        }}
+      ></Tab.Screen>
         </Tab.Navigator>
     );
 }

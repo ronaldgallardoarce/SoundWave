@@ -18,47 +18,48 @@ const SignIn = () => {
           }));
     }
     return (
-        <LinearGradient colors={["rgb(21, 56, 66)", "rgb(16, 23, 39)"]}
-            style={styles.containerLinearGradient}
-        >
-            <View style={styles.containerView}>
-                <Text style={styles.text}>¿Como te llamas?</Text>
-                <TextInput
-                    name="user_Name"
-                    onChangeText={handleChange}
-                    value={user.user_Name}
-                    style={styles.textInput}
-                    placeholder='Ingresa tu nombre de usuario...'
-                    placeholderTextColor={'gray'}
-                />
-                <Text style={styles.text}>¿Cuál es tu correo electronico?</Text>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder='Ingresa tu correo...'
-                    placeholderTextColor={'gray'}
-                    keyboardType='email-address'
-                />
-                <Text style={styles.text}>Crea una contraseña</Text>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder='Ingresa contraseña...'
-                    placeholderTextColor={'gray'}
-                />
-                <Text style={styles.text}>¿Cuál es tu fecha de nacimiento?</Text>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder='Ingresa tu nombre de usuario'
-                    placeholderTextColor={'gray'}
-                    keyboardType=''
-                />
-                <View style={{ alignItems: 'center' }}>
-                    <TouchableOpacity style={styles.buttonSignInSoundWabe}>
-                        <Text style={styles.textButtonSignIn}>Crear Cuenta</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </LinearGradient>
-    )
+      <LinearGradient
+        colors={["rgb(21, 56, 66)", "rgb(16, 23, 39)"]}
+        style={styles.containerLinearGradient}
+      >
+        <View style={styles.containerView}>
+          <Text style={styles.text}>¿Como te llamas?</Text>
+          <TextInput
+            name="user_Name"
+            onChangeText={handleChange}
+            value={user.user_Name}
+            style={styles.textInput}
+            placeholder="Ingresa tu nombre de usuario..."
+            placeholderTextColor={"gray"}
+          />
+          <Text style={styles.text}>¿Cuál es tu correo electronico?</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Ingresa tu correo..."
+            placeholderTextColor={"gray"}
+            keyboardType="email-address"
+          />
+          <Text style={styles.text}>Crea una contraseña</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Ingresa contraseña..."
+            placeholderTextColor={"gray"}
+          />
+          <Text style={styles.text}>¿Cuál es tu fecha de nacimiento?</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Ingresa tu nombre de usuario"
+            placeholderTextColor={"gray"}
+            keyboardType=""
+          />
+          <View style={{ alignItems: "center" }}>
+            <TouchableOpacity style={styles.buttonSignInSoundWabe}>
+              <Text style={styles.textButtonSignIn}>Crear Cuenta</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </LinearGradient>
+    );
 }
 
 export default SignIn

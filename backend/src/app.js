@@ -24,12 +24,8 @@ server.use((req, res, next) => {
     const now = new Date();
     res.header('server-time', now);
     next();
-})
-
-server.use(fileUpload({
-    useTempFiles: true,
-    tempFileDir:'./assets'
-}));
+});
+ 
 server.use('/api',router);
 server.use(cors({
     origin: '*',
@@ -38,6 +34,7 @@ server.use(cors({
 server.use((err, req, res, next) => {
     const status = err.status || 500;
     const message = err.message || err;
+    console.log(err)
     res.status(status).send(message);
 });
 
