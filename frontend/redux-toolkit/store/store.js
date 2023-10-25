@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import loginSlices from '../slices/userLogin.Slices';
+import userLoginSlices from "../slices/userLoginSlices";
 
 const store = configureStore({
     reducer:{
-        login: loginSlices
+        login: userLoginSlices
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(),
 })
