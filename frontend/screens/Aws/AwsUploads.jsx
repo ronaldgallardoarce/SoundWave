@@ -50,7 +50,7 @@ const AwsUpload = () => {
         bar: true,
       });
       const response = await axios.post(
-        "http://192.168.0.20:3001/api/aws/upload",
+        "http://172.16.3.105:3001/api/aws/upload",
         formData,
         {
           headers: {
@@ -66,7 +66,7 @@ const AwsUpload = () => {
           type: "image/jpeg", // Cambia "image/mp4" por el tipo MIME correcto del archivo
         });
         const responseImage = await axios.post(
-          "http://192.168.0.20:3001/api/aws/upload",
+          "http://172.16.3.105:3001/api/aws/upload",
           formDataImage,
           {
             headers: {
@@ -76,7 +76,7 @@ const AwsUpload = () => {
         );
         if (responseImage.data.key) {
           const res = await axios.post(
-            "http://192.168.0.20:3001/api/track/add",
+            "http://172.16.3.105:3001/api/track/add",
             {
               name: form.name,
               images: [responseImage.data.key],
@@ -189,13 +189,13 @@ const AwsUpload = () => {
             }
           >
             <Picker.Item label="Select an artist" value="" />
-            {artists.map((artist) => (
+            {artists? artists.map((artist) => (
               <Picker.Item
                 key={artist.id}
                 label={"Artist " + artist.name}
                 value={artist.id}
               />
-            ))}
+            )):null}
           </Picker>
         </View>
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>

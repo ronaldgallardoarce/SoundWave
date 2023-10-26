@@ -7,6 +7,7 @@ export const signin = createAsyncThunk("/signin", async (payload) => {
     }
   });
   export const login = createAsyncThunk("/login", async (payload) => {
+    console.log(payload)
     try {
       return payload
     } catch (error) {

@@ -15,7 +15,7 @@ const Home = () => {
     const [topArtists, setTopArtists] = useState([]);
     const [recentlyplayed, setRecentlyPlayed] = useState([]);
 
-    const userLogin = useSelector((state) => state.login.user)
+    // const userLogin = useSelector((state) => state.login.user);
     const greetingMessage = () => {
         const currentTime = new Date().getHours();
         if (currentTime < 12) {
@@ -57,10 +57,10 @@ const Home = () => {
             <ScrollView style={{ marginTop: 50 }}>
                 <View style={styles.containerView}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Image
+                        {/* <Image
                             style={styles.image}
                             source={{ uri: userLogin.image }}
-                        />
+                        /> */}
                         <Text
                             style={styles.saludo}
                         >
