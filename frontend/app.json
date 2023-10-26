@@ -23,7 +23,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "rgb(12, 18, 33)"
       },
-      "package": "com.anonymous.frontend"
+      "package": "com.anonymous.frontend",
+      "version": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"

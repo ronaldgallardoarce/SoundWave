@@ -55,7 +55,7 @@ const getAllTracksController = async () => {
   try {
     const response = await Track.findAll({
       include: [{
-        model: Evento
+        model: Artist
       }]
     });
     return response
