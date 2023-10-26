@@ -15,7 +15,7 @@ const Home = () => {
     const [topArtists, setTopArtists] = useState([]);
     const [recentlyplayed, setRecentlyPlayed] = useState([]);
 
-    const userLogin = useSelector((state) => state.login.user)
+    // const userLogin = useSelector((state) => state.login.user);
     const greetingMessage = () => {
         const currentTime = (new Date().getHours()-4);
         if (currentTime < 12) {
@@ -60,7 +60,7 @@ const Home = () => {
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         {/* <Image
                             style={styles.image}
-                            source={{ uri: userLogin.image?userLogin.image:'' }}
+                            source={{ uri: userLogin.image }}
                         /> */}
                         <Text
                             style={styles.saludo}

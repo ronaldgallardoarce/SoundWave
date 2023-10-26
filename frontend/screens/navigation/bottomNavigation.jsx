@@ -1,30 +1,39 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AntDesign } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
-import AddMusicSpotify from '../spotify/addMusicSpotify';
-import Login from '../login/login';
-import SignIn from '../login/signIn';
-import LoginForm from '../login/loginForm';
-import Artists from '../Artists/Artists';
-import AwsUploads from '../Aws/AwsUploads';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import Home from '../home/home';
-import LikedSongsScreen from '../likedsongs/likedSongs';
-import { getCurrentTrack, tracks } from '../../redux-toolkit/actions/tracksActions';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import AddMusicSpotify from "../spotify/addMusicSpotify";
+import Login from "../login/login";
+import SignIn from "../login/signIn";
+import LoginForm from "../login/loginForm";
+import Artists from "../Artists/Artists";
+import AwsUploads from "../Aws/AwsUploads";
+import Home from "../home/home";
+import Profile from "../Profile/profile";
+import { useDispatch, useSelector } from "react-redux";
+import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
+import { login } from "../../redux-toolkit/actions/userLoginActions";
+import { Avatar } from "react-native-paper";
+import { Text } from "react-native";
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
+    const navigation = useNavigation();
+    const us = useSelector((state) => state.login.user);
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        SecureStore.getItemAsync("session").then((response) => {
+            dispatch(login(response));
+        });
+    }, []);
     return (
         <Tab.Navigator
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    paddingTop:5,
-                    justifyContent: "center",
-                    alignItems:"center",
+                    backgroundColor: "rgba(0,0,0,0.5)",
                     position: "absolute",
                     bottom: 0,
                     left: 0,
@@ -34,44 +43,36 @@ const BottomTabs = () => {
                     elevation: 0,
                     shadowOffset: {
                         width: 0,
-                        height: -4
+                        height: -4,
                     },
-                    borderTopWidth: 0
-                }
+                    borderTopWidth: 0,
+                },
             }}
         >
             <Tab.Screen
-                name='Inicio'
+                name="Inicio"
                 component={Home}
                 options={{
-                    tabBarLabel: 'Inicio',
+                    tabBarLabel: "Inicio",
                     headerShown: false,
-                    tabBarLabelStyle: {
-                        color: 'white'
-                    },
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <Entypo name="home" size={24} color="white" />
-                        ) : (
-                            <AntDesign name="home" size={24} color="white" />
-                        )
+                    tabBarIcon: ({ color, size }) => (
+                        <AntDesign name="home" size={size} color={color} />
+                    ),
                 }}
             />
             <Tab.Screen
-                name='Spotify'
+                name="Spotify"
                 component={AddMusicSpotify}
                 options={{
-                    tabBarLabel: 'Spotify',
+                    tabBarLabel: "Spotify",
                     headerShown: false,
-                    tabBarLabelStyle: {
-                        color: 'white'
-                    },
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <Entypo name="home" size={24} color="white" />
-                        ) : (
-                            <AntDesign name="home" size={24} color="white" />
-                        )
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons
+                            name="music-box"
+                            size={size}
+                            color={color}
+                        />
+                    ),
                 }}
             />
             <Tab.Screen
@@ -96,7 +97,7 @@ const BottomTabs = () => {
                     tabBarLabel: "Artists",
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons
-                            name="upload-multiple"
+                            name="account-group"
                             size={size}
                             color={color}
                         />
@@ -104,37 +105,47 @@ const BottomTabs = () => {
                     headerShown: false,
                 }}
             ></Tab.Screen>
+            {
+                us ? <Tab.Screen
+                    name="Profile"
+                    component={Profile}
+                    options={{
+                        tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name="account" size={size} color={color} />
+                        ),
+                        headerShown: false,
+                        tabBarLabel: "Profile",
+                    }}
+                ></Tab.Screen> : null
+            }
+
         </Tab.Navigator>
     );
-}
+};
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
-    const dispatch=useDispatch()
-  useEffect(()=>{
-    dispatch(getCurrentTrack({}))
-    dispatch(tracks())
-  },[])
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName='login'>
+            <Stack.Navigator initialRouteName="login">
+                { }
                 <Stack.Screen
-                    name='Menu'
+                    name="Menu"
                     component={BottomTabs}
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                    name='Iniciar Sesion'
+                    name="Iniciar Sesion"
                     component={LoginForm}
                     options={{ headerShown: true }}
                 />
                 <Stack.Screen
-                    name='login'
+                    name="login"
                     component={Login}
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                    name='Crear cuenta'
+                    name="Crear cuenta"
                     component={SignIn}
                     options={{ headerShown: true }}
                 />
@@ -146,6 +157,6 @@ const Navigation = () => {
             </Stack.Navigator>
         </NavigationContainer>
     );
-}
+};
 
 export default Navigation;

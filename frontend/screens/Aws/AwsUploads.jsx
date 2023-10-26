@@ -189,13 +189,13 @@ const AwsUpload = () => {
             }
           >
             <Picker.Item label="Select an artist" value="" />
-            {artists.map((artist) => (
+            {artists? artists.map((artist) => (
               <Picker.Item
                 key={artist.id}
                 label={"Artist " + artist.name}
                 value={artist.id}
               />
-            ))}
+            )):null}
           </Picker>
         </View>
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>

@@ -11,7 +11,7 @@ export const getAllArtist = createAsyncThunk("/getAllArtist", async () => {
   try {
     console.log("vamos a ver");
     const response = await axios.get(
-      "artist/get"
+      "http://172.16.3.105:3001/api/artist/get"
     ); 
     return response.data;
   } catch (error) {
