@@ -1,63 +1,36 @@
-import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios';
 import{useDispatch} from 'react-redux'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { signin } from '../../redux-toolkit/actions/userLoginActions';
+import { login } from '../../redux-toolkit/actions/userLoginActions';
 
-const SignIn = () => {
+const LoginForm = () => {
     const dispatch= useDispatch()
     const navigation = useNavigation()
     const [user, setUser] = useState({
-        user_Name: '',
         email: '',
-        password: '',
-        birthday: ''
+        password: ''
     })
-    const [showPicker, setShowPicker] = useState(false)
     const handleChange = (name, text) => {
         setUser((prevUser) => ({
             ...prevUser,
             [name]: text,
         }));
     }
-    const registrarUsuario = async () => {
-        const response = await axios.post('user/signIn', user).then(res=>{
-            dispatch(signin(res.data.data))
+    const logInUsuario = async () => {
+        const response = await axios.post('user/logIn', user).then(res=>{
+            dispatch(login(res.data.data));
             navigation.replace('Menu')
         })
-    }
-    const toggleDatePicker = () => {
-        setShowPicker(!showPicker)
-    }
-    const onChange = ({ type }, selectedDate) => {
-        if (type == 'set') {
-            toggleDatePicker()
-            setUser({
-                ...user,
-                birthday: selectedDate.toDateString()
-            })
-        }
-        else {
-            toggleDatePicker()
-        }
     }
     return (
         <LinearGradient colors={["rgb(21, 56, 66)", "rgb(16, 23, 39)"]}
             style={styles.containerLinearGradient}
         >
             <View style={styles.containerView}>
-                <Text style={styles.text}>¿Como te llamas?</Text>
-                <TextInput
-                    onChangeText={(text) => handleChange('user_Name', text)}
-                    value={user.user_Name}
-                    style={styles.textInput}
-                    placeholder='Ingresa tu nombre de usuario...'
-                    placeholderTextColor={'gray'}
-                />
-                <Text style={styles.text}>¿Cuál es tu correo electronico?</Text>
+                <Text style={styles.text}>Correo Electronico</Text>
                 <TextInput
                     onChangeText={(text) => handleChange('email', text)}
                     value={user.email}
@@ -65,7 +38,7 @@ const SignIn = () => {
                     placeholder='Ingresa tu correo...'
                     placeholderTextColor={'gray'}
                 />
-                <Text style={styles.text}>Crea una contraseña</Text>
+                <Text style={styles.text}>Contraseña</Text>
                 <TextInput
                     onChangeText={(text) => handleChange('password', text)}
                     value={user.password}
@@ -74,28 +47,10 @@ const SignIn = () => {
                     placeholderTextColor={'gray'}
                     secureTextEntry={true}
                 />
-                <Text style={styles.text}>¿Cuál es tu fecha de nacimiento?</Text>
-                <Pressable onPress={toggleDatePicker}>
-                    <TextInput
-                        value={user.birthday}
-                        style={styles.textInput}
-                        placeholder='Selecciona fecha de nacimiento...'
-                        placeholderTextColor={'gray'}
-                        editable={false}
-                    />
-                </Pressable>
-                {showPicker &&
-                    <DateTimePicker
-                        value={new Date()}
-                        mode='date'
-                        display='spinner'
-                        onChange={onChange}
-                    />
-                }
 
                 <View style={{ alignItems: 'center' }}>
-                    <TouchableOpacity style={styles.buttonSignInSoundWabe} onPress={registrarUsuario}>
-                        <Text style={styles.textButtonSignIn}>Crear Cuenta</Text>
+                    <TouchableOpacity style={styles.buttonSignInSoundWabe} onPress={logInUsuario}>
+                        <Text style={styles.textButtonSignIn}>Iniciar Sesion</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -103,7 +58,7 @@ const SignIn = () => {
     )
 }
 
-export default SignIn
+export default LoginForm
 
 const styles = StyleSheet.create({
     containerView: {

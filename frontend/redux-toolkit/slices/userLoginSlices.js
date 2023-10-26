@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { signin } from "../actions/userLoginActions";
+import { login, signin } from "../actions/userLoginActions";
 
 const initialState = {
-    user:{}
+  auth: false,
+  user: {}
 };
 
 const loginSlices = createSlice({
@@ -13,11 +14,24 @@ const loginSlices = createSlice({
       state.status = "pending";
     });
     builder.addCase(signin.fulfilled, (state, action) => { //action.payload
-        state.user=action.payload
-        state.status = "success";
+      state.auth = true;
+      state.user = action.payload
+      state.status = "success";
     });
     builder.addCase(signin.rejected, (state, action) => {
-        state.status = "rejected";
+      state.status = "rejected";
+    });
+
+    builder.addCase(login.pending, (state, action) => {
+      state.status = "pending";
+    });
+    builder.addCase(login.fulfilled, (state, action) => { //action.payload
+      state.auth = true;
+      state.user = action.payload
+      state.status = "success";
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      state.status = "rejected";
     });
   }
 });
