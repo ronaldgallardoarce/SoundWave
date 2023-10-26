@@ -21,9 +21,10 @@ const Login = () => {
   useEffect(() => {
     SecureStore.getItemAsync("session").then((response) => {
       console.log(response)
-        if(response.user_Name){ 
-            dispatch(login(response));
-            navigation.replace("Menu");
+      const prov=JSON.parse(response);
+        if (prov.user_Name) {
+          dispatch(login(prov));
+          navigation.replace("Menu");
         }
     });
   }, []);

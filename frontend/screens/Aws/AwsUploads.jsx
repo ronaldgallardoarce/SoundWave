@@ -31,6 +31,8 @@ const AwsUpload = () => {
     ArtisId: "select",
   });
   const artists = useSelector((state) => state.tracksArtistsSlices.artists);
+  console.log(artists,"nose para probar")
+  const [showArtists,setShowArtists]=useState([]);
   const [showProgress, setShowProgress] = useState({
     message: false,
     bar: false,
@@ -68,7 +70,7 @@ const AwsUpload = () => {
             type: "image/jpeg", // Cambia "image/mp4" por el tipo MIME correcto del archivo
           });
           const responseImage = await axios.post(
-            "aws/upload",
+            "api/aws/upload",
             formDataImage,
             {
               headers: {
@@ -151,6 +153,8 @@ const AwsUpload = () => {
   };
   useEffect(() => {
     dispatch(getAllArtist());
+    setShowArtists(artists);
+
   }, []);
   return (
     <SafeAreaView style={styles.container}>
