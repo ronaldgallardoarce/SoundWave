@@ -79,10 +79,10 @@ const SpotifyItems = ({ savedTracks, changeTextSearch, refreshItemsTracks }) => 
   };
 
   const onPlaybackStatusUpdate = async (status) => {
-    console.log(status);
+    // console.log(status);
     if (status.isLoaded && status.isPlaying) {
       const progress = status.positionMillis / status.durationMillis;
-      console.log("progresss", progress);
+      // console.log("progresss", progress);
       setProgress(progress);
       setCurrentTime(status.positionMillis);
       setTotalDuration(status.durationMillis);

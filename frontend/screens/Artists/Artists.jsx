@@ -35,8 +35,8 @@ const Artists = () => {
       const formData = new FormData();
       formData.append("file", {
         uri: form.images,
-        name: "profile.jpeg",
-        type: "image/jpeg",
+        name: "profile.jpg",
+        type: "image/*",
       });
       try {
         setShowProgress({
@@ -44,7 +44,7 @@ const Artists = () => {
           bar: true,
         });
         const response = await axios.post(
-          "aws/upload",
+          "api/aws/upload",
           formData,
           {
             headers: {
@@ -54,7 +54,7 @@ const Artists = () => {
         );
         if (response.data.key) {
           const res = await axios.post(
-            "artist/register",
+            "api/artist/register",
             {
               name: form.name,
               images: [response.data.key],
