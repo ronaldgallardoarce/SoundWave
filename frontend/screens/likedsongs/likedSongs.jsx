@@ -22,7 +22,7 @@ import { ModalContent } from "react-native-modals";
 import { Audio } from "expo-av";
 import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentTrack } from "../../redux-toolkit/actions/tracksActions";
+import { getCurrentTrack, tracks } from "../../redux-toolkit/actions/tracksActions";
 import SongItem from "./songItem";
 
 const LikedSongsScreen = () => {
@@ -37,7 +37,7 @@ const LikedSongsScreen = () => {
         "#5B8FB9",
         "#144272",
     ];
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
     const currentTrack = useSelector((state) => state.currentTrack.currentTrack);
     const navigation = useNavigation();
     const [backgroundColor, setBackgroundColor] = useState("#0A2647");
@@ -51,6 +51,10 @@ const LikedSongsScreen = () => {
     const [currentTime, setCurrentTime] = useState(0);
     const [totalDuration, setTotalDuration] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
+    useEffect(() => {
+        dispatch(tracks())
+        console.log(currentTrack,'current track')
+    }, [])
 
     const playTrack = async () => {
         if (savedTracks.length > 0) {
@@ -59,8 +63,7 @@ const LikedSongsScreen = () => {
         await play(savedTracks[0]);
     };
     const play = async (nextTrack) => {
-        console.log(nextTrack);
-        const preview_url = nextTrack.preview_url;
+        const preview_url = nextTrack?.url;
         try {
             if (currentSound) {
                 await currentSound.stopAsync();
@@ -111,12 +114,12 @@ const LikedSongsScreen = () => {
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     };
 
-    const handlePlayPause = async () => {
+    const handlePlayPause = async (item) => {
         if (currentSound) {
             if (isPlaying) {
                 await currentSound.pauseAsync();
             } else {
-                await currentSound.playAsync();
+                await play(item);
             }
             setIsPlaying(!isPlaying);
         }
@@ -157,7 +160,7 @@ const LikedSongsScreen = () => {
             setCurrentSound(null);
         }
         value.current -= 1;
-        if (value.current < savedTracks.length) {
+        if (value.current < savedTracks.length&&value.current>=0) {
             const nextTrack = savedTracks[value.current];
             dispatch(getCurrentTrack(nextTrack));
 
@@ -169,7 +172,7 @@ const LikedSongsScreen = () => {
     const debouncedSearch = debounce(handleSearch, 800);
     function handleSearch(text) {
         const filteredTracks = savedTracks.filter((item) =>
-            item.name.toLowerCase().includes(text.toLowerCase())
+            item?.name.toLowerCase().includes(text.toLowerCase())
         );
         setSearchedTracks(filteredTracks);
     }
@@ -177,6 +180,7 @@ const LikedSongsScreen = () => {
         setInput(text);
         debouncedSearch(text);
     };
+
     return (
         <>
             <LinearGradient colors={["rgb(36, 76, 119)", "rgb(12, 18, 33)"]} style={{ flex: 1 }}>
@@ -202,7 +206,7 @@ const LikedSongsScreen = () => {
                                 flexDirection: "row",
                                 alignItems: "center",
                                 gap: 10,
-                                backgroundColor: "#42275a",
+                                backgroundColor: "rgba(39, 39, 39,0.8)",
                                 padding: 9,
                                 flex: 1,
                                 borderRadius: 3,
@@ -222,7 +226,7 @@ const LikedSongsScreen = () => {
                         <Pressable
                             style={{
                                 marginHorizontal: 10,
-                                backgroundColor: "#42275a",
+                                backgroundColor: "rgba(39, 39, 39,0.8)",
                                 padding: 10,
                                 borderRadius: 3,
                                 height: 38,
@@ -235,10 +239,10 @@ const LikedSongsScreen = () => {
                     <View style={{ height: 50 }} />
                     <View style={{ marginHorizontal: 10 }}>
                         <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-                            Liked Songs
+                            Tus canciones favoritas
                         </Text>
                         <Text style={{ color: "white", fontSize: 13, marginTop: 5 }}>
-                            430 songs
+                            {savedTracks.length} canciones
                         </Text>
                     </View>
 
@@ -306,14 +310,12 @@ const LikedSongsScreen = () => {
             </LinearGradient>
 
 
-
-
-
-            {currentTrack && (
+            {currentTrack.name ?
+                <>
                 <Pressable
                     onPress={() => setModalVisible(!modalVisible)}
                     style={{
-                        backgroundColor: "#5072A7",
+                        backgroundColor: "rgba(36, 76, 119,0.5)",
                         width: "90%",
                         padding: 10,
                         marginLeft: "auto",
@@ -343,8 +345,8 @@ const LikedSongsScreen = () => {
                                 fontWeight: "bold",
                             }}
                         >
-                            {currentTrack.name} •{" "}
-                            {currentTrack.Artist.name}
+                            {currentTrack.name!=undefined?currentTrack.name:''} •{" "}
+                            {currentTrack.Artist != null ? currentTrack.Artist.name : ''}
                         </Text>
                     </View>
 
@@ -355,7 +357,7 @@ const LikedSongsScreen = () => {
                         </Pressable>
                     </View>
                 </Pressable>
-            )}
+
 
             <BottomModal
                 visible={modalVisible}
@@ -364,7 +366,7 @@ const LikedSongsScreen = () => {
                 swipeThreshold={200}
             >
                 <ModalContent
-                    style={{ height: "100%", width: "100%", backgroundColor: "#5072A7" }}
+                    style={{ height: "100%", width: "100%", backgroundColor: "rgb(13, 51, 78)" }}
                 >
                     <View style={{ height: "100%", width: "100%", marginTop: 40 }}>
                         <Pressable
@@ -384,7 +386,7 @@ const LikedSongsScreen = () => {
                             <Text
                                 style={{ fontSize: 14, fontWeight: "bold", color: "white" }}
                             >
-                                {currentTrack.name}
+                                {currentTrack.name!=undefined ? currentTrack.name : ''}
                             </Text>
 
                             <Entypo name="dots-three-vertical" size={24} color="white" />
@@ -408,10 +410,10 @@ const LikedSongsScreen = () => {
                                     <Text
                                         style={{ fontSize: 18, fontWeight: "bold", color: "white" }}
                                     >
-                                        {currentTrack.name}
+                                        {currentTrack.name!=undefined ? currentTrack.name : ''}
                                     </Text>
                                     <Text style={{ color: "#D3D3D3", marginTop: 4 }}>
-                                        {currentTrack.Artist.name}
+                                        {currentTrack.Artist != null ? currentTrack.Artist.name : ''}
                                     </Text>
                                 </View>
 
@@ -486,12 +488,12 @@ const LikedSongsScreen = () => {
                                 <Pressable onPress={playPreviousTrack}>
                                     <Ionicons name="play-skip-back" size={30} color="white" />
                                 </Pressable>
-                                <Pressable onPress={handlePlayPause}>
+                                <Pressable onPress={()=>handlePlayPause(currentTrack)}>
                                     {isPlaying ? (
                                         <AntDesign name="pausecircle" size={60} color="white" />
                                     ) : (
                                         <Pressable
-                                            onPress={handlePlayPause}
+                                            onPress={()=>handlePlayPause(currentTrack)}
                                             style={{
                                                 width: 60,
                                                 height: 60,
@@ -515,7 +517,11 @@ const LikedSongsScreen = () => {
                         </View>
                     </View>
                 </ModalContent>
+                
             </BottomModal>
+                </>: null}
+
+
         </>
     );
 };

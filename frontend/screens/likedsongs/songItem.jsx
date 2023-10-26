@@ -34,10 +34,10 @@ const SongItem = ({ item, onPress, isPlaying }) => {
                             : { fontWeight: "bold", fontSize: 14, color: "white" }
                     }
                 >
-                    {item.name}
+                    {item.name!=null?item.name:''}
                 </Text>
                 <Text style={{ marginTop: 4, color: "#989898" }}>
-                    {item.Artist.name}
+                    {item.Artist!=null?item.Artist.name:''}
                 </Text>
             </View>
 

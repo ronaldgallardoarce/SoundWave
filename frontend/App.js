@@ -4,8 +4,9 @@ import Navigation from './screens/navigation/bottomNavigation';
 // import Nav from "./Navigation";
 import * as SecureStore from "expo-secure-store";
 import axios from 'axios'; 
-// axios.defaults.baseURL='http://192.168.56.1:3001/api/';
-axios.defaults.baseURL = "https://apigitronald.onrender.com/api/";
+import { ModalPortal } from 'react-native-modals';
+axios.defaults.baseURL='http://192.168.1.176:3001/api/';
+// axios.defaults.baseURL = "https://apigitronald.onrender.com/api/";
 
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
     <>
       <Provider store={store}>
         <Navigation />
+        <ModalPortal/>
         {/* <Nav></Nav> */}
       </Provider>
     </>

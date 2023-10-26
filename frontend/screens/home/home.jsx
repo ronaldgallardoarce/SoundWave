@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import RenderItem from '../../components/renderItem';
 import ArtistCard from '../../components/artistCard';
+import * as SecureStore from "expo-secure-store";
 import RecentlyPlayedCard from '../../components/recentlyPlayedCard';
 
 const Home = () => {
@@ -15,9 +16,22 @@ const Home = () => {
     const [topArtists, setTopArtists] = useState([]);
     const [recentlyplayed, setRecentlyPlayed] = useState([]);
 
-    // const userLogin = useSelector((state) => state.login.user);
+    const [userLogin, setUserLogin] = useState({});
+    const recharge = async ({ email, password }) => {
+        await axios.post("user/logIn", { email, password }).then((res) => {
+          setUserLogin(res.data.data);
+          console.log(res.data.data,'user login');
+        });
+      };
+      useEffect(() => {
+        SecureStore.getItemAsync("session").then((response) => {
+          if (response) {
+            recharge(JSON.parse(user));
+          }
+        });
+      }, []);
     const greetingMessage = () => {
-        const currentTime = (new Date().getHours()-4);
+        const currentTime = (new Date().getHours() - 4);
         if (currentTime < 12) {
             return "Good Morning";
         } else if (currentTime < 19) {
@@ -30,7 +44,6 @@ const Home = () => {
     const getRecentlyPlayedSongs = async () => {
         try {
             const response = await axios.get('track/top4').then(res => {
-                console.log(res.data);
                 setRecentlyPlayed(res.data);
             })
         } catch (err) {
@@ -58,14 +71,17 @@ const Home = () => {
             <ScrollView style={{ marginTop: 50 }}>
                 <View style={styles.containerView}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        {/* <Image
-                            style={styles.image}
-                            source={{ uri: userLogin.image }}
-                        /> */}
+                        {
+                            userLogin.image ?
+                                <Image
+                                    style={styles.image}
+                                    source={{ uri: userLogin.image }}
+                                /> : null
+                        }
                         <Text
                             style={styles.saludo}
                         >
-                            {message}
+                            {message} d
                         </Text>
                     </View>
                     <MaterialCommunityIcons

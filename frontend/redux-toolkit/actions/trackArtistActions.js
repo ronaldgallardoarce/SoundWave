@@ -11,7 +11,7 @@ export const getAllArtist = createAsyncThunk("/getAllArtist", async () => {
   try {
     console.log("vamos a ver");
     const response = await axios.get(
-      "api/artist/get"
+      "artist/get"
     ); 
     console.log(response.data)
     return response.data;

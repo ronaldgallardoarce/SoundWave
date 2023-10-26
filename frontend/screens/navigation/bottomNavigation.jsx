@@ -16,9 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { login } from "../../redux-toolkit/actions/userLoginActions";
-import { Avatar } from "react-native-paper";
+// import { Avatar } from "react-native-paper";
 import { Text } from "react-native";
-import LikedSongsScreen from '../likedsongs/likedSongs'
+import LikedSongsScreen from "../likedsongs/likedSongs";
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
     const navigation = useNavigation();
@@ -34,7 +34,7 @@ const BottomTabs = () => {
         <Tab.Navigator
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: "rgba(0,0,0,0.5)",
+                    backgroundColor: "rgba(0,0,0,0.8)",
                     position: "absolute",
                     bottom: 0,
                     left: 0,
@@ -153,7 +153,7 @@ const Navigation = () => {
                 <Stack.Screen
                     name='Favoritos'
                     component={LikedSongsScreen}
-                    options={{ headerShown: true }}
+                    options={{ headerShown: false }}
                 />
             </Stack.Navigator>
         </NavigationContainer>
