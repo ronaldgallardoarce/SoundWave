@@ -8,7 +8,7 @@ const {
 server.use(
     fileUpload({
     useTempFiles: true,
-    tempFileDir: "./src/assets/",
+    tempFileDir: "./assets/",
   })
 );
 server.get("/",(req, res)=>{

@@ -1,4 +1,4 @@
-const {addArtist,getArtist}=require('../controllers/artistController');
+const {addArtist,getArtist, getArtistTop6}=require('../controllers/artistController');
 const addArtistHanlder = async(req,res) => {
     try {
         const artist=req.body;
@@ -16,7 +16,16 @@ const getArtistHanlder = async (req, res) => {
     res.status(401).json(error);
   }
 };
+const getArtistTop6Handler= async(req, res) => {
+  try {
+    const result = await getArtistTop6();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
 module.exports = {
   addArtistHanlder,
   getArtistHanlder,
+  getArtistTop6Handler,
 };

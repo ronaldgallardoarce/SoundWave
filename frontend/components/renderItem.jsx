@@ -8,7 +8,7 @@ const RenderItem = ({item}) => {
                 justifyContent: "space-between",
                 marginHorizontal: 10,
                 marginVertical: 8,
-                backgroundColor: "#282828",
+                backgroundColor: "rgba(39, 39, 39,0.8)",
                 borderRadius: 4,
                 elevation: 3,
             }}

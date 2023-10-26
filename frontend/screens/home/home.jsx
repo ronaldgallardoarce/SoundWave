@@ -17,7 +17,7 @@ const Home = () => {
 
     // const userLogin = useSelector((state) => state.login.user);
     const greetingMessage = () => {
-        const currentTime = new Date().getHours();
+        const currentTime = (new Date().getHours()-4);
         if (currentTime < 12) {
             return "Good Morning";
         } else if (currentTime < 19) {
@@ -29,9 +29,10 @@ const Home = () => {
     const message = greetingMessage();
     const getRecentlyPlayedSongs = async () => {
         try {
-            const response = await axios.get('/track/top4')
-            const tracks = response.data.data;
-            setRecentlyPlayed(tracks);
+            const response = await axios.get('track/top4').then(res => {
+                console.log(res.data);
+                setRecentlyPlayed(res.data);
+            })
         } catch (err) {
             console.log(err.message);
         }
@@ -40,8 +41,8 @@ const Home = () => {
     useEffect(() => {
         const getTopItems = async () => {
             try {
-                const response = await axios.get('/artist/top5');
-                setTopArtists(response.data.data);
+                const response = await axios.get('artist/top6');
+                setTopArtists(response.data);
             } catch (err) {
                 console.log(err.message);
             }
@@ -51,7 +52,7 @@ const Home = () => {
     }, []);
 
     return (
-        <LinearGradient colors={["rgb(21, 56, 66)", "rgb(16, 23, 39)"]}
+        <LinearGradient colors={["rgb(36, 76, 119)", "rgb(12, 18, 33)"]}
             style={styles.containerLinearGradient}
         >
             <ScrollView style={{ marginTop: 50 }}>
@@ -115,7 +116,7 @@ const Home = () => {
                     }}
                 >
                     <Pressable
-                        onPress={() => navigation.navigate("Menu")}
+                        onPress={() => navigation.navigate("Favoritos")}
                         style={{
                             marginBottom: 10,
                             flexDirection: "row",
@@ -124,7 +125,7 @@ const Home = () => {
                             flex: 1,
                             marginHorizontal: 10,
                             marginVertical: 8,
-                            backgroundColor: "#202020",
+                            backgroundColor: "rgba(39, 39, 39,0.8)",
                             borderRadius: 4,
                             elevation: 3,
                         }}
@@ -156,7 +157,7 @@ const Home = () => {
                             flex: 1,
                             marginHorizontal: 10,
                             marginVertical: 8,
-                            backgroundColor: "#202020",
+                            backgroundColor: "rgba(39, 39, 39,0.8)",
                             borderRadius: 4,
                             elevation: 3,
                         }}
@@ -191,14 +192,18 @@ const Home = () => {
                         marginTop: 10,
                     }}
                 >
-                    Your Top Artists
+                    Los Artistas mas populares
                 </Text>
 
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {topArtists.map((item, index) => (
-                        <ArtistCard item={item} key={index} />
-                    ))}
-                </ScrollView>
+                {topArtists && topArtists.length > 0 ? (
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {topArtists.map((item, index) => (
+                            <ArtistCard item={item} key={index} />
+                        ))}
+                    </ScrollView>
+                ) : (
+                    <Text>Cargando top artistas...</Text>
+                )}
 
                 <View style={{ height: 10 }} />
                 <Text
@@ -210,7 +215,7 @@ const Home = () => {
                         marginTop: 10,
                     }}
                 >
-                    Recently Played
+                    Lo mas escuchado
                 </Text>
                 <FlatList
                     data={recentlyplayed}

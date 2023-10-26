@@ -1,3 +1,4 @@
+const { Track } = require("../db");
 const axios = require('axios');
 const qs = require('querystring');
 const {
@@ -57,6 +58,16 @@ module.exports = {
     },
     searchDataByType: async (datos, token) => {
         try {
+            const checkIfTrackExists = async (url) => {
+                try {
+                    const track = await Track.findOne({ where: { url: url } });
+                    return track !== null;
+                } catch (error) {
+                    console.error(`Error: ${error}`);
+                    return false;
+                }
+            }
+
             const url = 'https://api.spotify.com/v1/search';
             const params = {
                 q: datos.search,
@@ -65,11 +76,45 @@ module.exports = {
             const headers = {
                 'Authorization': `Bearer ${token}`
             };
-            const response = await axios.get(url, { params, headers })
+            const response = await axios.get(url, { params, headers });
+
+            // Crear un array de promesas
+            const trackExistsPromises = response.data.tracks.items.map(item => {
+                if (item.preview_url !== null) {
+                    return checkIfTrackExists(item.preview_url);
+                }
+                return Promise.resolve(false);
+            });
+
+            // Esperar a que todas las promesas se resuelvan
+            const trackExistsResults = await Promise.all(trackExistsPromises);
+
+            // Filtrar los elementos del array 'tracks.items' que no existen en la tabla 'Track'
+            response.data.tracks.items = response.data.tracks.items.filter((item, index) => {
+                if (item.preview_url !== null) {
+                    return !trackExistsResults[index];
+                }
+                return false;
+            });
+
             return response.data;
         } catch (error) {
             console.error(`Error: ${error}`);
             return 'Error al buscar datos';
         }
+    },
+
+    getArtistById: async (href, token) => {
+        try {
+            const url = href;
+            const headers = {
+                'Authorization': `Bearer ${token}`
+            };
+            const response = await axios.get(url, { headers });
+            return response.data
+        } catch (error) {
+            return error;
+        }
     }
+
 }
