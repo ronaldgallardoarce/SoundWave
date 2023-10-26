@@ -8,6 +8,7 @@ import {
   Image,
   Button,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
@@ -17,6 +18,10 @@ import { useDispatch } from "react-redux";
 import { allArtist } from "../../redux-toolkit/actions/trackArtistActions";
 
 const Artists = () => {
+  const [showProgress, setShowProgress] = useState({
+    message: false,
+    bar: false,
+  });
   const [form, setForm] = useState({
     name: "",
     images: "",
@@ -24,54 +29,66 @@ const Artists = () => {
     genres: "",
     popularity: 0,
   });
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("file", {
-      uri: form.images,
-      name: "profile.jpeg",
-      type: "image/jpeg",
-    });
-    try {
-      const response = await axios.post(
-        "aws/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      if (response.data.key) {
-        const res = await axios.post(
-          "artist/register",
+    if (form.name && form.genres) {
+      const formData = new FormData();
+      formData.append("file", {
+        uri: form.images,
+        name: "profile.jpeg",
+        type: "image/jpeg",
+      });
+      try {
+        setShowProgress({
+          ...showProgress,
+          bar: true,
+        });
+        const response = await axios.post(
+          "aws/upload",
+          formData,
           {
-            name: form.name,
-            images: [response.data.key],
-            followers: form.followers,
-            genres: [form.genres],
-            popularity: form.popularity,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
         );
-        if(res){
-          dispatch(allArtist(res.data.update));
+        if (response.data.key) {
+          const res = await axios.post(
+            "artist/register",
+            {
+              name: form.name,
+              images: [response.data.key],
+              followers: form.followers,
+              genres: [form.genres],
+              popularity: form.popularity,
+            }
+          );
+          setShowProgress({
+            ...showProgress,
+            bar: false,
+          });
+          if (res) {
+            dispatch(allArtist(res.data.update));
+          }
+          Alert.alert(
+            "Registro exitoso",
+            "El artista se ha creado correctamente"
+          );
+          setForm({
+            name: "",
+            images: null,
+            followers: 0,
+            genres: "",
+            popularity: 0,
+          });
         }
-        Alert.alert(
-          "Registro exitoso",
-          "El artista se ha creado correctamente"
-        );
-        setForm({
-          name: "",
-          images: null,
-          followers: 0,
-          genres: "",
-          popularity: 0,
-        });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error.data);
+        console.log("Error al subir el archivo:", error);
       }
-      console.log(response.data);
-    } catch (error) {
-      console.log(error.data);
-      console.log("Error al subir el archivo:", error);
+    }else{
+      Alert.alert("Error", "No se pudo crear todos los datos son necesarios");
     }
   };
   const pickDocument = async () => {
@@ -126,6 +143,18 @@ const Artists = () => {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
+      {showProgress.bar ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 16,
+          }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : null}
       {/* <Text style={styles.buttonText}>{JSON.stringify(form)}</Text> */}
     </View>
   );

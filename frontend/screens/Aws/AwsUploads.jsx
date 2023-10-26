@@ -11,6 +11,7 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
@@ -38,64 +39,80 @@ const AwsUpload = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("file", {
-      uri: form.url,
-      name: "video.mp4", // Cambia "video.mp4" por el nombre que deseas darle al archivo en el servidor
-      type: "video/mp4", // Cambia "video/mp4" por el tipo MIME correcto del archivo
-    });
-    try {
-      setShowProgress({
-        ...showProgress,
-        bar: true,
+    if (form.name != "" && form.url != "" && form.file != "") {
+      const formData = new FormData();
+      formData.append("file", {
+        uri: form.url,
+        name: "video.mp4", // Cambia "video.mp4" por el nombre que deseas darle al archivo en el servidor
+        type: "video/mp4", // Cambia "video/mp4" por el tipo MIME correcto del archivo
       });
-      const response = await axios.post(
-        "aws/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      if (response.data.key) {
-        const formDataImage = new FormData();
-        formDataImage.append("file", {
-          uri: form.url,
-          name: "image.jpeg", // Cambia "image.mp4" por el nombre que deseas darle al archivo en el servidor
-          type: "image/jpeg", // Cambia "image/mp4" por el tipo MIME correcto del archivo
+      try {
+        setShowProgress({
+          ...showProgress,
+          bar: true,
         });
-        const responseImage = await axios.post(
-          "aws/upload",
-          formDataImage,
+        const response = await axios.post(
+          "api/aws/upload",
+          formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           }
         );
-        if (responseImage.data.key) {
-          const res = await axios.post(
-            "track/add",
+        if (response.data.key) {
+          const formDataImage = new FormData();
+          formDataImage.append("file", {
+            uri: form.url,
+            name: "image.jpeg", // Cambia "image.mp4" por el nombre que deseas darle al archivo en el servidor
+            type: "image/jpeg", // Cambia "image/mp4" por el tipo MIME correcto del archivo
+          });
+          const responseImage = await axios.post(
+            "aws/upload",
+            formDataImage,
             {
-              name: form.name,
-              images: [responseImage.data.key],
-              url:response.data.key,
-              realase_Date:form.realase_Date,
-              popularity:form.popularity,
-              ArtisId:form.ArtisId
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
             }
           );
-          console.log(res)
+          if (responseImage.data.key) {
+            const res = await axios.post(
+              "track/add",
+              {
+                name: form.name,
+                images: [responseImage.data.key],
+                url: response.data.key,
+                realase_Date: form.realase_Date,
+                popularity: form.popularity,
+                ArtisId: form.ArtisId,
+              }
+            );
+            Alert.alert("Estado de subida", "Subido exitosamente");
+            setForm({
+              name: "",
+              file: "",
+              url: "",
+              realase_Date: new Date(),
+              popularity: 0,
+              ArtisId: "select",
+            });
+            setShowProgress({
+              ...showProgress,
+              bar: false,
+            });
+          }
         }
+      } catch (error) {
+        console.log(error.data);
+        console.log("Error al subir el archivo:", error);
       }
+    } else {
+      Alert.alert("Estado de subida", "No se puso subir faltan datos");
       setShowProgress({
         ...showProgress,
         bar: false,
       });
-    } catch (error) {
-      console.log(error.data);
-      console.log("Error al subir el archivo:", error);
     }
   };
   const pickDocumentAudio = async () => {
@@ -189,15 +206,29 @@ const AwsUpload = () => {
             }
           >
             <Picker.Item label="Select an artist" value="" />
-            {artists? artists.map((artist) => (
-              <Picker.Item
-                key={artist.id}
-                label={"Artist " + artist.name}
-                value={artist.id}
-              />
-            )):null}
+            {artists
+              ? artists.map((artist) => (
+                  <Picker.Item
+                    key={artist.id}
+                    label={"Artist " + artist.name}
+                    value={artist.id}
+                  />
+                ))
+              : null}
           </Picker>
         </View>
+        {showProgress.bar ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : null}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
