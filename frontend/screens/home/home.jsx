@@ -115,7 +115,7 @@ const Home = () => {
                     }}
                 >
                     <Pressable
-                        onPress={() => navigation.navigate("Liked")}
+                        onPress={() => navigation.navigate("Menu")}
                         style={{
                             marginBottom: 10,
                             flexDirection: "row",

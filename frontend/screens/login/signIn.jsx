@@ -3,9 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios';
+import{useDispatch} from 'react-redux'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import { signin } from '../../redux-toolkit/actions/userLoginActions';
 
 const SignIn = () => {
+    const dispatch= useDispatch()
     const navigation = useNavigation()
     const [user, setUser] = useState({
         user_Name: '',
@@ -21,8 +24,10 @@ const SignIn = () => {
         }));
     }
     const registrarUsuario = async () => {
-        const response = await axios.post('user/signIn', user)
-        console.log(response.data.data);
+        const response = await axios.post('user/signIn', user).then(res=>{
+            dispatch(signin(res.data.data))
+            navigation.replace('Menu')
+        })
     }
     const toggleDatePicker = () => {
         setShowPicker(!showPicker)

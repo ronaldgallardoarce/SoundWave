@@ -1,9 +1,16 @@
 require('dotenv').config();
 const server =require('./src/app');
 const {conn}=require('./src/db');
+const fileUpload=require('express-fileupload');
 const {
     PORT
 }=process.env
+server.use(
+    fileUpload({
+    useTempFiles: true,
+    tempFileDir: "./src/assets/",
+  })
+);
 server.get("/",(req, res)=>{
     res.status(200).send('<h1>Welcome to the SOUNDWAVE web api</h1>');
 })
