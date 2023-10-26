@@ -5,7 +5,7 @@ import Navigation from './screens/navigation/bottomNavigation';
 import * as SecureStore from "expo-secure-store";
 import axios from 'axios'; 
 // axios.defaults.baseURL='http://192.168.56.1:3001/api/';
-axios.defaults.baseURL = "http://172.16.3.105:3001/api/";
+axios.defaults.baseURL = "https://apigitronald.onrender.com/api/";
 
 
 export default function App() {

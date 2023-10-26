@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { login } from "../../redux-toolkit/actions/userLoginActions";
 import { Avatar } from "react-native-paper";
 import { Text } from "react-native";
+import LikedSongsScreen from '../likedsongs/likedSongs'
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
     const navigation = useNavigation();
