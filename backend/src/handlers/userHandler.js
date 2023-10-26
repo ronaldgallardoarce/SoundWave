@@ -1,4 +1,4 @@
-const { signInUser } = require("../controllers/userController");
+const { signInUser, logIn } = require("../controllers/userController");
 const respuesta = require("../utils/respuesta");
 
 module.exports = {
@@ -6,5 +6,10 @@ module.exports = {
         const user = req.body;
         const response = await signInUser(user);
         respuesta(res, 200, response)
+    },
+    logIn: async (req, res) => {
+        const user = req.body;
+        const response = await logIn(user);
+        respuesta(res, 200, response);
     }
 }

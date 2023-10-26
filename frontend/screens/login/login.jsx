@@ -12,6 +12,9 @@ const Login = () => {
     const signIn=()=>{
         navigation.navigate('Crear cuenta');
     }
+    const logIn=()=>{
+        navigation.navigate('Iniciar Sesion');
+    }
 
     return (
         <LinearGradient colors={["rgb(28, 80, 86)", "rgb(16, 23, 39)"]} style={styles.containerLinearGradient}
@@ -32,7 +35,7 @@ const Login = () => {
                     <FontAwesome5 style={styles.iconButtonSignIn} name="facebook" size={24} color="rgb(8, 102, 255)" />
                     <Text style={styles.textButtonSignIn}>Continuar con Facebook</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{marginVertical:20}}>
+                <TouchableOpacity style={{marginVertical:20}} onPress={logIn}>
                     <Text style={styles.textButtonSignIn}>Iniciar Sesion</Text>
                 </TouchableOpacity>
             </View>

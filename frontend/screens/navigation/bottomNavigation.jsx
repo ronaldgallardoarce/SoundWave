@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import AddMusicSpotify from '../spotify/addMusicSpotify';
 import Login from '../login/login';
 import SignIn from '../login/signIn';
+import Home from '../home/home';
+import LoginForm from '../login/loginForm';
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
     return (
@@ -30,7 +32,7 @@ const BottomTabs = () => {
         >
             <Tab.Screen
                 name='Inicio'
-                component={AddMusicSpotify}
+                component={Home}
                 options={{
                     tabBarLabel: 'Inicio',
                     headerShown: false,
@@ -46,10 +48,10 @@ const BottomTabs = () => {
                 }}
             />
             <Tab.Screen
-                name='login'
-                component={Login}
+                name='Spotify'
+                component={AddMusicSpotify}
                 options={{
-                    tabBarLabel: 'Login',
+                    tabBarLabel: 'Spotify',
                     headerShown: false,
                     tabBarLabelStyle: {
                         color: 'white'
@@ -75,6 +77,11 @@ const Navigation = () => {
                     name='Menu'
                     component={BottomTabs}
                     options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name='Iniciar Sesion'
+                    component={LoginForm}
+                    options={{ headerShown: true }}
                 />
                 <Stack.Screen
                     name='login'

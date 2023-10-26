@@ -1,12 +1,16 @@
 import axios from 'axios';
 import React, { useRef } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Animated, Button, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
+import { Animated, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import SpotifyItems from './spotifyItems';
 
 const AddMusicSpotify = () => {
+
     const [search, setSearch] = useState('');
+    const [tracks, setTracks] = useState({});
     useEffect(() => {
         const buscar = {
             search: search,
@@ -14,16 +18,24 @@ const AddMusicSpotify = () => {
         }
         if (search != '') {
             const response = axios.post('spotify/searchData', buscar).then(res => {
-                console.log(res.data.data);
+                setTracks(res.data.data.tracks.items)
             })
         }
     }, [search]);
     return (
-        <View style={styles.container}>
-            <Buscador
-                setSearch={setSearch}
-            />
-        </View>
+        <LinearGradient colors={["rgb(21, 56, 66)", "rgb(16, 23, 39)"]}
+            style={styles.containerLinearGradient}
+        >
+            <View style={styles.container}>
+                <Buscador
+                    setSearch={setSearch}
+                />
+                <SpotifyItems
+                    savedTracks={tracks}
+                />
+            </View>
+        </LinearGradient>
+
     );
 }
 
@@ -49,10 +61,13 @@ const Buscador = ({ setSearch }) => {
     const animatedStyle = {
         transform: [{ scale: scaleValue }],
     };
-
+    const navigation = useNavigation()
+    const back = () => {
+        navigation.replace('login')
+    }
     return (
         <View style={styles.card}>
-            <TouchableWithoutFeedback onPressIn={onPressIn} onPressOut={onPressOut}>
+            <TouchableWithoutFeedback onPress={back} onPressIn={onPressIn} onPressOut={onPressOut}>
                 <Animated.View style={animatedStyle}>
                     <Ionicons name="arrow-back" size={35} color="white" style={{ marginRight: 17 }} />
                 </Animated.View>
@@ -68,12 +83,14 @@ const Buscador = ({ setSearch }) => {
 };
 
 const styles = StyleSheet.create({
+    containerLinearGradient: {
+        flex: 1,
+    },
     container: {
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'rgb(0,0,40)',
         height: '100%',
-        padding: 20
+        marginTop:30
     },
     input: {
         color: 'white',
@@ -89,5 +106,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
+        padding:20
     }
 });
+
