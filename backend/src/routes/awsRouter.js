@@ -7,7 +7,7 @@ const { emitter } = require('../services/aws_s3');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     console.log(file);
-    cb(null, "./src/assets");
+    cb(null, "./assets");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);

@@ -1,86 +1,41 @@
 import axios from 'axios';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
-import { Animated, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, View } from 'react-native';
 import SpotifyItems from './spotifyItems';
 
 const AddMusicSpotify = () => {
 
-    const [search, setSearch] = useState('');
     const [tracks, setTracks] = useState({});
-    useEffect(() => {
+    const changeTextSearch = (text) => {
         const buscar = {
-            search: search,
+            search: text,
             type: 'track'
         }
-        if (search != '') {
+        if (text != '') {
             const response = axios.post('spotify/searchData', buscar).then(res => {
                 setTracks(res.data.data.tracks.items)
             })
         }
-    }, [search]);
+    }
+    const refreshItemsTracks = (item) => {
+        const refresh = tracks.filter((track) => track != item);
+        setTracks(refresh)
+    }
     return (
-        <LinearGradient colors={["rgb(21, 56, 66)", "rgb(16, 23, 39)"]}
-            style={styles.containerLinearGradient}
-        >
-            <View style={styles.container}>
-                <Buscador
-                    setSearch={setSearch}
-                />
-                <SpotifyItems
-                    savedTracks={tracks}
-                />
-            </View>
-        </LinearGradient>
+
+        <View style={styles.container}>
+            <SpotifyItems
+                savedTracks={tracks}
+                changeTextSearch={changeTextSearch}
+                refreshItemsTracks={refreshItemsTracks}
+            />
+        </View>
 
     );
 }
 
 export default AddMusicSpotify;
-
-const Buscador = ({ setSearch }) => {
-    const scaleValue = useRef(new Animated.Value(1)).current;
-
-    const onPressIn = () => {
-        Animated.spring(scaleValue, {
-            toValue: 0.8,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const onPressOut = () => {
-        Animated.spring(scaleValue, {
-            toValue: 1,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const animatedStyle = {
-        transform: [{ scale: scaleValue }],
-    };
-    const navigation = useNavigation()
-    const back = () => {
-        navigation.replace('login')
-    }
-    return (
-        <View style={styles.card}>
-            <TouchableWithoutFeedback onPress={back} onPressIn={onPressIn} onPressOut={onPressOut}>
-                <Animated.View style={animatedStyle}>
-                    <Ionicons name="arrow-back" size={35} color="white" style={{ marginRight: 17 }} />
-                </Animated.View>
-            </TouchableWithoutFeedback>
-            <TextInput
-                style={styles.input}
-                placeholder='¿Que desas escuchar?...'
-                placeholderTextColor={'gray'}
-                onChangeText={(text) => setSearch(text)}
-            />
-        </View>
-    );
-};
 
 const styles = StyleSheet.create({
     containerLinearGradient: {
@@ -89,8 +44,7 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        marginTop:30
+        height: '100%'
     },
     input: {
         color: 'white',
@@ -106,7 +60,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
-        padding:20
+        padding: 20
     }
 });
 

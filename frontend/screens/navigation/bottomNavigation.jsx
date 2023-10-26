@@ -10,14 +10,21 @@ import SignIn from '../login/signIn';
 import LoginForm from '../login/loginForm';
 import Artists from '../Artists/Artists';
 import AwsUploads from '../Aws/AwsUploads';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Home from '../home/home';
+import LikedSongsScreen from '../likedsongs/likedSongs';
+import { getCurrentTrack, tracks } from '../../redux-toolkit/actions/tracksActions';
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
     return (
         <Tab.Navigator
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: "rgba(0,0,0,0.5)",
+                    backgroundColor: "rgba(0,0,0,0.8)",
+                    paddingTop:5,
+                    justifyContent: "center",
+                    alignItems:"center",
                     position: "absolute",
                     bottom: 0,
                     left: 0,
@@ -103,6 +110,11 @@ const BottomTabs = () => {
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
+    const dispatch=useDispatch()
+  useEffect(()=>{
+    dispatch(getCurrentTrack({}))
+    dispatch(tracks())
+  },[])
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName='login'>
@@ -124,6 +136,11 @@ const Navigation = () => {
                 <Stack.Screen
                     name='Crear cuenta'
                     component={SignIn}
+                    options={{ headerShown: true }}
+                />
+                <Stack.Screen
+                    name='Favoritos'
+                    component={LikedSongsScreen}
                     options={{ headerShown: true }}
                 />
             </Stack.Navigator>

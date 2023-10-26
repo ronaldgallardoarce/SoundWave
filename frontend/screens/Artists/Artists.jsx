@@ -34,7 +34,7 @@ const Artists = () => {
     });
     try {
       const response = await axios.post(
-        "http://192.168.0.20:3001/api/aws/upload",
+        "aws/upload",
         formData,
         {
           headers: {
@@ -44,7 +44,7 @@ const Artists = () => {
       );
       if (response.data.key) {
         const res = await axios.post(
-          "http://192.168.0.20:3001/api/artist/register",
+          "artist/register",
           {
             name: form.name,
             images: [response.data.key],

@@ -17,7 +17,20 @@ const getArtist = async () => {
     return error;
   }
 };
+
+const getArtistTop6 = async () => {
+  try {
+    const top6 = await Artist.findAll({
+      limit: 6,
+      order: [['followers', 'DESC']]
+    });
+    return top6
+  } catch (error) {
+    return error;
+  }
+}
 module.exports = {
   addArtist,
   getArtist,
+  getArtistTop6,
 };

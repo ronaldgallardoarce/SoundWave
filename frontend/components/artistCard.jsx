@@ -5,7 +5,7 @@ const ArtistCard = ({item}) => {
     return (
         <View style={{ margin: 10 }}>
           <Image
-            style={{ width: 130, height: 130, borderRadius: 5 }}
+            style={{ width: 130, height: 130, borderRadius: 100 }}
             source={{ uri: item.images[0] }}
           />
           <Text
@@ -16,7 +16,7 @@ const ArtistCard = ({item}) => {
               marginTop: 10,
             }}
           >
-            {item?.name}
+            {item.name}
           </Text>
         </View>
       );
